@@ -3,10 +3,9 @@ import { QuadrantType, Task, AIImportResult } from "../types";
 
 // Helper to get client (using the requested initialization pattern)
 const getAiClient = () => {
-  // Allow fetching API key from localStorage as requested by the user, fallback to env var
-  const apiKey = localStorage.getItem('gemini_api_key') || process.env.API_KEY;
+  const apiKey = process.env.API_KEY;
   if (!apiKey) {
-    throw new Error("API_KEY not found in localStorage ('gemini_api_key') or environment variables.");
+    throw new Error("API_KEY environment variable is not set.");
   }
   return new GoogleGenAI({ apiKey });
 };

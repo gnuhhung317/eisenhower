@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Maximize2, Minimize2, BarChart2, CheckSquare, Calendar, History, LayoutGrid } from 'lucide-react';
