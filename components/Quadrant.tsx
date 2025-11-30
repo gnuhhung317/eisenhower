@@ -38,24 +38,25 @@ export const Quadrant: React.FC<QuadrantProps> = ({
     <div
       onDrop={(e) => onDrop(e, type)}
       onDragOver={onDragOver}
-      style={{ flexGrow: Math.max(1, flexGrow) }}
+      // Fix: Use shorthand 'flex' with basis 0px to ignore content width
+      style={{ flex: `${Math.max(1, flexGrow)} 1 0px` }}
       className={`
         relative flex flex-col rounded-xl border transition-all duration-500 ease-in-out
         ${config.borderColor} ${config.bgColor} backdrop-blur-sm p-4 overflow-hidden
-        min-h-[200px]
+        min-h-[200px] min-w-0
       `}
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-4 sticky top-0 z-10">
         <div>
-          <h2 className={`text-lg font-bold ${config.color} tracking-tight`}>
+          <h2 className={`text-lg font-bold ${config.color} tracking-tight truncate`}>
             {config.label}
           </h2>
-          <p className="text-xs text-slate-400 font-medium opacity-80">
+          <p className="text-xs text-slate-400 font-medium opacity-80 truncate">
             {config.subLabel}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
            <span className="text-xs font-mono bg-slate-900/50 text-slate-500 px-2 py-1 rounded border border-slate-700/50">
              {tasks.length}
            </span>

@@ -68,14 +68,24 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onTaskToggle 
         {days.map((day, index) => {
           const dayTasks = day ? getTasksForDay(day) : [];
           const isToday = day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
+          const totalTasks = dayTasks.length;
+          const completedTasks = dayTasks.filter(t => t.completed).length;
 
           return (
             <div key={index} className={`bg-slate-900/80 min-h-[100px] p-2 hover:bg-slate-900 transition-colors relative flex flex-col gap-1 ${!day ? 'bg-slate-950/50' : ''}`}>
               {day && (
                 <>
-                  <span className={`text-sm font-medium mb-1 block w-6 h-6 text-center leading-6 rounded-full ${isToday ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>
-                    {day}
-                  </span>
+                  <div className="flex justify-between items-start mb-1">
+                    <span className={`text-sm font-medium block w-6 h-6 text-center leading-6 rounded-full ${isToday ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>
+                      {day}
+                    </span>
+                    {totalTasks > 0 && (
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${completedTasks === totalTasks ? 'bg-green-900/30 text-green-400' : 'bg-slate-800 text-slate-500'}`}>
+                        {completedTasks}/{totalTasks}
+                      </span>
+                    )}
+                  </div>
+                  
                   <div className="flex-1 overflow-y-auto scrollbar-none space-y-1">
                     {dayTasks.map(task => (
                       <div 
