@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Task, QUADRANT_CONFIG } from '../types';
-import { GripVertical, CheckCircle2, Circle, Tag, Trash2, Calendar } from 'lucide-react';
+import { GripVertical, CheckCircle2, Circle, Tag, Trash2, Calendar, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface TaskCardProps {
   task: Task;
@@ -11,6 +11,9 @@ interface TaskCardProps {
   onDragStart: (e: React.DragEvent, id: string) => void;
   isSelected: boolean;
   onSelect: (id: string) => void;
+  onReorder: (id: string, direction: 'up' | 'down') => void;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({ 
@@ -20,7 +23,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onDelete, 
   onDragStart,
   isSelected,
-  onSelect
+  onSelect,
+  onReorder,
+  isFirst,
+  isLast
 }) => {
   const quadrantColor = QUADRANT_CONFIG[task.quadrant].color;
   
@@ -124,10 +130,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         ${task.completed ? 'opacity-50 grayscale' : 'opacity-100'}
       `}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-stretch gap-3">
         <button 
           onClick={(e) => { e.stopPropagation(); onToggle(task.id); }}
-          className="mt-1 text-slate-500 hover:text-green-400 transition-colors"
+          className="mt-1 text-slate-500 hover:text-green-400 transition-colors self-start"
         >
           {task.completed ? <CheckCircle2 size={18} /> : <Circle size={18} />}
         </button>
@@ -195,16 +201,35 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </div>
 
         {!isEditing && (
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1">
-            <div className="cursor-grab text-slate-600 hover:text-slate-400">
-                <GripVertical size={14} />
-            </div>
-            <button 
-                onClick={(e) => { e.stopPropagation(); onDelete(task.id); }}
-                className="text-slate-600 hover:text-red-400 mt-auto"
-            >
-                <Trash2 size={14} />
-            </button>
+             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between items-center">
+                <div className="flex flex-col items-center">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onReorder(task.id, 'up'); }}
+                        disabled={isFirst}
+                        className="text-slate-600 hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
+                        title="Move Up"
+                    >
+                        <ChevronUp size={16} />
+                    </button>
+                    <div className="cursor-grab text-slate-600 hover:text-slate-400 py-1" title="Drag to move quadrant">
+                        <GripVertical size={14} />
+                    </div>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onReorder(task.id, 'down'); }}
+                        disabled={isLast}
+                        className="text-slate-600 hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
+                        title="Move Down"
+                    >
+                        <ChevronDown size={16} />
+                    </button>
+                </div>
+                <button 
+                    onClick={(e) => { e.stopPropagation(); onDelete(task.id); }}
+                    className="text-slate-600 hover:text-red-400 p-0.5"
+                    title="Delete Task"
+                >
+                    <Trash2 size={14} />
+                </button>
             </div>
         )}
       </div>

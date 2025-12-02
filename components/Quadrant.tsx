@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { QuadrantType, Task, QUADRANT_CONFIG } from '../types';
 import { TaskCard } from './TaskCard';
@@ -12,6 +13,7 @@ interface QuadrantProps {
   onTaskUpdate: (id: string, updates: Partial<Task>) => void;
   onTaskDelete: (id: string) => void;
   onTaskDragStart: (e: React.DragEvent, id: string) => void;
+  onTaskReorder: (id: string, direction: 'up' | 'down') => void;
   selectedTaskId: string | null;
   onTaskSelect: (id: string) => void;
   onAddTask: (quadrant: QuadrantType) => void;
@@ -27,6 +29,7 @@ export const Quadrant: React.FC<QuadrantProps> = ({
   onTaskUpdate,
   onTaskDelete,
   onTaskDragStart,
+  onTaskReorder,
   selectedTaskId,
   onTaskSelect,
   onAddTask,
@@ -77,7 +80,7 @@ export const Quadrant: React.FC<QuadrantProps> = ({
              <p className="text-xs opacity-50">Shortcut: {config.shortcut}</p>
           </div>
         ) : (
-          tasks.map(task => (
+          tasks.map((task, index) => (
             <TaskCard
               key={task.id}
               task={task}
@@ -85,6 +88,9 @@ export const Quadrant: React.FC<QuadrantProps> = ({
               onUpdate={onTaskUpdate}
               onDelete={onTaskDelete}
               onDragStart={onTaskDragStart}
+              onReorder={onTaskReorder}
+              isFirst={index === 0}
+              isLast={index === tasks.length - 1}
               isSelected={selectedTaskId === task.id}
               onSelect={onTaskSelect}
             />

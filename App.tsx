@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Maximize2, Minimize2, BarChart2, CheckSquare, Calendar, History, LayoutGrid } from 'lucide-react';
@@ -83,6 +84,34 @@ const App: React.FC = () => {
 
   const moveTask = (id: string, quadrant: QuadrantType) => {
     setTasks(prev => prev.map(t => t.id === id ? { ...t, quadrant } : t));
+  };
+
+  const reorderTask = (taskId: string, direction: 'up' | 'down') => {
+    const tasksCopy = [...tasks];
+    const taskToMove = tasksCopy.find(t => t.id === taskId);
+    if (!taskToMove) return;
+  
+    // We operate on the list of *visible* tasks in that quadrant
+    const quadrantTasks = tasksCopy.filter(t => t.quadrant === taskToMove.quadrant && !t.completed);
+    const localIndex = quadrantTasks.findIndex(t => t.id === taskId);
+  
+    let taskToSwapWith: Task | undefined;
+  
+    if (direction === 'up' && localIndex > 0) {
+      taskToSwapWith = quadrantTasks[localIndex - 1];
+    } else if (direction === 'down' && localIndex < quadrantTasks.length - 1) {
+      taskToSwapWith = quadrantTasks[localIndex + 1];
+    }
+  
+    if (taskToSwapWith) {
+      const globalIndex1 = tasksCopy.findIndex(t => t.id === taskToMove.id);
+      const globalIndex2 = tasksCopy.findIndex(t => t.id === taskToSwapWith!.id);
+      
+      // Simple swap in the main array
+      [tasksCopy[globalIndex1], tasksCopy[globalIndex2]] = [tasksCopy[globalIndex2], tasksCopy[globalIndex1]];
+      
+      setTasks(tasksCopy);
+    }
   };
 
   // --- Drag & Drop ---
@@ -195,6 +224,7 @@ const App: React.FC = () => {
           onTaskUpdate={updateTask}
           onTaskDelete={deleteTask}
           onTaskDragStart={handleDragStart}
+          onTaskReorder={reorderTask}
           selectedTaskId={selectedTaskId}
           onTaskSelect={setSelectedTaskId}
           onAddTask={() => addTask(QuadrantType.Backlog)}
@@ -296,6 +326,7 @@ const App: React.FC = () => {
                      onTaskUpdate={updateTask}
                      onTaskDelete={deleteTask}
                      onTaskDragStart={handleDragStart}
+                     onTaskReorder={reorderTask}
                      selectedTaskId={selectedTaskId}
                      onTaskSelect={setSelectedTaskId}
                      onAddTask={addTask}
@@ -316,6 +347,7 @@ const App: React.FC = () => {
                       onTaskUpdate={updateTask}
                       onTaskDelete={deleteTask}
                       onTaskDragStart={handleDragStart}
+                      onTaskReorder={reorderTask}
                       selectedTaskId={selectedTaskId}
                       onTaskSelect={setSelectedTaskId}
                       onAddTask={addTask}
@@ -330,6 +362,7 @@ const App: React.FC = () => {
                       onTaskUpdate={updateTask}
                       onTaskDelete={deleteTask}
                       onTaskDragStart={handleDragStart}
+                      onTaskReorder={reorderTask}
                       selectedTaskId={selectedTaskId}
                       onTaskSelect={setSelectedTaskId}
                       onAddTask={addTask}
@@ -348,6 +381,7 @@ const App: React.FC = () => {
                       onTaskUpdate={updateTask}
                       onTaskDelete={deleteTask}
                       onTaskDragStart={handleDragStart}
+                      onTaskReorder={reorderTask}
                       selectedTaskId={selectedTaskId}
                       onTaskSelect={setSelectedTaskId}
                       onAddTask={addTask}
@@ -362,6 +396,7 @@ const App: React.FC = () => {
                       onTaskUpdate={updateTask}
                       onTaskDelete={deleteTask}
                       onTaskDragStart={handleDragStart}
+                      onTaskReorder={reorderTask}
                       selectedTaskId={selectedTaskId}
                       onTaskSelect={setSelectedTaskId}
                       onAddTask={addTask}

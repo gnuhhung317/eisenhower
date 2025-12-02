@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Task, QuadrantType, QUADRANT_CONFIG } from '../types';
 import { TaskCard } from './TaskCard';
@@ -11,6 +12,7 @@ interface SidebarProps {
   onTaskUpdate: (id: string, updates: Partial<Task>) => void;
   onTaskDelete: (id: string) => void;
   onTaskDragStart: (e: React.DragEvent, id: string) => void;
+  onTaskReorder: (id: string, direction: 'up' | 'down') => void;
   selectedTaskId: string | null;
   onTaskSelect: (id: string) => void;
   onAddTask: () => void;
@@ -25,6 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onTaskUpdate,
   onTaskDelete,
   onTaskDragStart,
+  onTaskReorder,
   selectedTaskId,
   onTaskSelect,
   onAddTask,
@@ -71,7 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <p className="text-xs opacity-50 mt-1">Great job!</p>
           </div>
         ) : (
-          tasks.map(task => (
+          tasks.map((task, index) => (
             <TaskCard
               key={task.id}
               task={task}
@@ -79,6 +82,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onUpdate={onTaskUpdate}
               onDelete={onTaskDelete}
               onDragStart={onTaskDragStart}
+              onReorder={onTaskReorder}
+              isFirst={index === 0}
+              isLast={index === tasks.length - 1}
               isSelected={selectedTaskId === task.id}
               onSelect={onTaskSelect}
             />
